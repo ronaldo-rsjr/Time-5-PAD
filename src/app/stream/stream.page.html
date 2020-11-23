@@ -19,9 +19,14 @@
           <ion-label stacked>URL do video:</ion-label>
           <!-- aqui vai o link do video, input do usuario -->
           <ion-input type="text" [(ngModel)]="inputVideo" text-right id="input" placeholder="Exemplo: https://www.youtube.com/watch?v=5qap5aO4i9A"></ion-input> 
+          <!-- muda pro proximo video -->
+          <ion-button type="submit" (click)="nextVideo()" [disabled]="verifyArray()" id="btn">Proximo</ion-button> 
           <!-- aqui e o botao que chama o metodo e add o video -->
-          <ion-button type="submit" (click)="addVideo()" id="btn">Adicionar na playlist</ion-button> 
+          <ion-button type="submit" (click)="addVideo()" [disabled]="verifyLink()" id="btn">Adicionar na playlist</ion-button> 
         </ion-item> 
+
+        <!-- por enquanto mostra so os links adicionados na playlist -->
+        <ion-item><span>Adicionados na playlist: {{playlistYT | json}}</span></ion-item>
       </ion-list>
     </div>
 
