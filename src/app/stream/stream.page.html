@@ -16,12 +16,11 @@
       <!-- <form novalidate [formGroup]='formulario' (ngSubmit)='addVideo()'> -->
         <ion-list>
           <ion-item> 
-            <ion-label stacked>ID do video:</ion-label>
-            <ion-input type="text" [(ngModel)]="inputID" text-right id="input"></ion-input>
-            <button ion-button type="submit" (click)="addVideo()" id="btn">Adicionar na playlist</button>
+            <ion-label stacked>Link do video:</ion-label>
+            <ion-input type="text" [(ngModel)]="inputVideo" text-right id="input"></ion-input> <!-- aqui vai o link do video, input do usuario -->
+            <button ion-button type="submit" (click)="addVideo()" id="btn">Adicionar na playlist</button> <!-- aqui e o botao que por quanto so troca o video -->
           </ion-item> 
         </ion-list>
-        
       <!-- </form> -->
 
     </div>
