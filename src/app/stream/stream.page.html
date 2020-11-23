@@ -10,19 +10,19 @@
   <div id="container">
 
     <div id="stream">
-
-      <iframe id="video" [src]="sanitizer.bypassSecurityTrustResourceUrl(currentVideo)" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+      <!-- aqui vai ser o video -->
+      <iframe id="video" [src]="currentVideo" allow="autoplay;" allowfullscreen></iframe>
       
-      <!-- <form novalidate [formGroup]='formulario' (ngSubmit)='addVideo()'> -->
-        <ion-list>
-          <ion-item> 
-            <ion-label stacked>Link do video:</ion-label>
-            <ion-input type="text" [(ngModel)]="inputVideo" text-right id="input"></ion-input> <!-- aqui vai o link do video, input do usuario -->
-            <button ion-button type="submit" (click)="addVideo()" id="btn">Adicionar na playlist</button> <!-- aqui e o botao que por quanto so troca o video -->
-          </ion-item> 
-        </ion-list>
-      <!-- </form> -->
-
+      <!-- aqui vai ser o input do usuario -->
+      <ion-list>
+        <ion-item> 
+          <ion-label stacked>URL do video:</ion-label>
+          <!-- aqui vai o link do video, input do usuario -->
+          <ion-input type="text" [(ngModel)]="inputVideo" text-right id="input" placeholder="Exemplo: https://www.youtube.com/watch?v=5qap5aO4i9A"></ion-input> 
+          <!-- aqui e o botao que chama o metodo e add o video -->
+          <ion-button type="submit" (click)="addVideo()" id="btn">Adicionar na playlist</ion-button> 
+        </ion-item> 
+      </ion-list>
     </div>
 
     <div id="chat"></div>
