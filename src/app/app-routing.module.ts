@@ -10,7 +10,11 @@ const routes: Routes = [
     path: '',
     redirectTo: 'home',
     pathMatch: 'full'
+  },  {
+    path: 'stream',
+    loadChildren: () => import('./stream/stream.module').then( m => m.StreamPageModule)
   },
+
 ];
 
 @NgModule({
