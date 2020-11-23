@@ -1,0 +1,32 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>
+      Stream
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div id="container">
+
+    <div id="stream">
+
+      <iframe id="video" [src]="sanitizer.bypassSecurityTrustResourceUrl(currentVideo)" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+      
+      <!-- <form novalidate [formGroup]='formulario' (ngSubmit)='addVideo()'> -->
+        <ion-list>
+          <ion-item> 
+            <ion-label stacked>ID do video:</ion-label>
+            <ion-input type="text" [(ngModel)]="inputID" text-right id="input"></ion-input>
+            <button ion-button type="submit" (click)="addVideo()" id="btn">Adicionar na playlist</button>
+          </ion-item> 
+        </ion-list>
+        
+      <!-- </form> -->
+
+    </div>
+
+    <div id="chat"></div>
+
+  </div>
+</ion-content>
