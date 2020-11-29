@@ -52,6 +52,7 @@ export class AuthPage implements OnInit {
     } catch (error)
     {
       this.presentToast(error.message);
+      this.loading.dismiss();
     } finally
     {
       this.loading.dismiss();
@@ -67,6 +68,7 @@ export class AuthPage implements OnInit {
     } catch (error)
     {
       this.presentToast(error.message);
+      this.loading.dismiss();
     } finally
     {
       (await this.authService.getAuth().currentUser).updateProfile({
