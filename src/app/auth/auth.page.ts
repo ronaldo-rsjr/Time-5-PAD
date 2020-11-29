@@ -1,9 +1,11 @@
+import { HomePage } from './../home/home.page';
 import { AuthService } from './../services/auth.service';
 import { User } from './../interfaces/user';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { IonSlides, LoadingController, ToastController } from '@ionic/angular';
 import { setIndex } from '@ionic-native/core/decorators/common';
 import { FormBuilder, FormGroup, NgModel, Validators } from '@angular/forms';
+
 
 @Component({
   selector: 'app-auth',
@@ -12,18 +14,18 @@ import { FormBuilder, FormGroup, NgModel, Validators } from '@angular/forms';
 })
 
 export class AuthPage implements OnInit {
-  @ViewChild(IonSlides) slides: IonSlides;
-  public wavesPosition: number = 0;
-  public wavesDifference: number = 100;
-  public userLogin: User = {};
-  public userRegister: User = {};
-  private loading: any;
 
   constructor(
     private loadingCtrl: LoadingController,
     public toastCtrl: ToastController,
     private authService: AuthService
   ) { }
+  @ViewChild(IonSlides) slides: IonSlides;
+  public wavesPosition: number = 0;
+  public wavesDifference: number = 100;
+  public userLogin: User = {};
+  public userRegister: User = {};
+  private loading: any;
 
   ngOnInit() {}
 
@@ -67,6 +69,9 @@ export class AuthPage implements OnInit {
       this.presentToast(error.message);
     } finally
     {
+      (await this.authService.getAuth().currentUser).updateProfile({
+        displayName: this.userRegister.name,
+      });
       this.loading.dismiss();
     }
   }

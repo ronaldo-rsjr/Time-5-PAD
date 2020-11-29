@@ -7,7 +7,8 @@ import { User } from '../interfaces/user';
 })
 export class AuthService {
 
-  constructor(private afa: AngularFireAuth) { }
+  constructor(
+    private afa: AngularFireAuth) { }
 
   login(user: User)
   {
@@ -20,7 +21,7 @@ export class AuthService {
 
   logout()
   {
-
+    this.getAuth().signOut();
   }
 
   getAuth()
