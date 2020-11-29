@@ -46,7 +46,7 @@ export class AuthPage implements OnInit {
     await this.presentLoading();
 
     try {
-      this.authService.login(this.userLogin);
+      await this.authService.login(this.userLogin);
     } catch (error)
     {
       this.presentToast(error.message);
@@ -61,7 +61,7 @@ export class AuthPage implements OnInit {
     await this.presentLoading();
 
     try {
-      this.authService.register(this.userRegister);
+      await this.authService.register(this.userRegister);
     } catch (error)
     {
       this.presentToast(error.message);
