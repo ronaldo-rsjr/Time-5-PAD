@@ -24,7 +24,13 @@ export class AuthPage implements OnInit {
   public wavesPosition: number = 0;
   public wavesDifference: number = 100;
   public userLogin: User = {};
-  public userRegister: User = {};
+  public userRegister: User = {
+    name: '',
+    email: '',
+    password: '',
+  };
+  public static UserRegister: User;
+  public static isRegister: boolean;
   private loading: any;
 
   ngOnInit() {}
@@ -56,6 +62,7 @@ export class AuthPage implements OnInit {
     } finally
     {
       this.loading.dismiss();
+      AuthPage.isRegister = false;
     }
   }
 
@@ -64,7 +71,15 @@ export class AuthPage implements OnInit {
     await this.presentLoading();
 
     try {
-      await this.authService.register(this.userRegister);
+      if (this.userRegister.name !== '')
+      {
+        await this.authService.register(this.userRegister);
+      }
+      else
+      {
+        this.presentToast("Nome de usuário é necessário para o registro");
+        this.loading.dismiss();
+      }
     } catch (error)
     {
       this.presentToast(error.message);
@@ -75,6 +90,9 @@ export class AuthPage implements OnInit {
         displayName: this.userRegister.name,
       });
       this.loading.dismiss();
+      AuthPage.isRegister = true;
+      AuthPage.UserRegister = this.userRegister;
+      console.log((await this.authService.getAuth().currentUser).displayName);
     }
   }
 

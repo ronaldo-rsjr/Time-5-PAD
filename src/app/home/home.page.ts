@@ -11,10 +11,23 @@ import { ToastController } from '@ionic/angular';
   styleUrls: ['home.page.scss'],
 })
 export class HomePage{
+  public nome: string;
   constructor(
     public authService: AuthService,
     public toastCtrl: ToastController,
   ) {}
+
+  async ionViewWillEnter()
+  {
+    if (AuthPage.isRegister)
+    {
+      this.nome = AuthPage.UserRegister.name;
+    }
+    else
+    {
+      this.nome = (await((await this.authService.getAuth().currentUser).displayName));
+    }
+  }
 
   logout()
   {
