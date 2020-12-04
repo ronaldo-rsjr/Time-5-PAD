@@ -35,12 +35,13 @@ export class AuthPage implements OnInit {
 
   ngOnInit() {}
 
-  segmentChanged(event: any)
+  segmentChanged(value)
   {
-    if (event.detail.value === 'login')
+    if (value === 'login')
     {
       this.slides.slidePrev();
       this.wavesPosition += this.wavesDifference;
+      
     }
     else
     {

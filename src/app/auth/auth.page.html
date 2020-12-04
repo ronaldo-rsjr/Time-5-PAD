@@ -1,14 +1,14 @@
 <link rel="preconnect" href="https://fonts.gstatic.com">
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
 
-
-<ion-content class="swiper-no-swiping">
-
+<img src="https://fontmeme.com/permalink/201204/be4957e5ad14881f9b9d5fade6bc6446.png" alt="netflix-font" border="0">
+<ion-content class="swiper-no-swiping">  
+  
   <ion-slides>
     <ion-slide>
       <div class="slide-inner ion-padding">
 
-        <h1>ENTRE PARA<br>ACESSAR O SITE.</h1>
+        <!-- <h1>Entre no Streamtube</h1> -->
 
         <ion-item class ="ion-margin-top" lines ="none">
           <ion-input type="email" placeholder="E-mail" [(ngModel)] = "userLogin.email"></ion-input>
@@ -22,12 +22,32 @@
           Entrar
         </ion-button>
       </div>
+
+      <a (click)="segmentChanged('register')" 
+      style='
+      position: relative;
+
+      cursor: pointer;
+
+      font-family: Nunito;
+      font-style: normal;
+      font-weight: 400;
+      font-size: 20px;
+      line-height: 41px;
+      display: flex;
+      align-items: center;
+      text-align: center;
+      
+      color: #FF6B6B;'
+      
+      >Crie uma conta</a>
+
     </ion-slide>
 
     <ion-slide>
       <div class="slide-inner ion-padding">
 
-        <h1>CADASTRE-SE PARA<br>ACESSAR O SITE.</h1>
+        <!-- <h1>Cadastre-se</h1> -->
         
         <ion-item class ="ion-margin-top" lines="none">
           <ion-input type ="text" placeholder="Nome" [(ngModel)] = "userRegister.name"></ion-input>
@@ -44,36 +64,29 @@
         <ion-button class ="ion-margin-top" (click) ="register()" color ="danger" expand ="block">
           Cadastrar
         </ion-button>
+
       </div>
+
+      <a (click)="segmentChanged('login')" 
+        style='
+        position: relative;
+
+        cursor: pointer;
+  
+        font-family: Nunito;
+        font-style: normal;
+        font-weight: 400;
+        font-size: 20px;
+        line-height: 41px;
+        display: flex;
+        align-items: center;
+        text-align: center;
+        
+        color: #FF6B6B;'
+        
+        >Em vez disso, entrar no site</a>
+
       </ion-slide>
   </ion-slides>
-
-  <div class="container top">
-    
-    <ion-header [translucent]="true">
-      
-      <ion-toolbar color="danger">
-          
-      <ion-segment 
-      value="all" 
-      color="tertiary" 
-      scrollable="false"
-      mode="desktop"
-      (ionChange)="segmentChanged($event)">
-  
-        <ion-segment-button value="login">
-          <ion-label>Crie uma conta</ion-label>
-        </ion-segment-button>
-  
-        <ion-segment-button value="register">
-          <ion-label>Em vez disso, entrar no site.</ion-label>
-        </ion-segment-button>
-  
-      </ion-segment>
-      
-    </ion-toolbar>
-  </ion-header>
-
-  </div>
 
 </ion-content>

@@ -1,3 +1,8 @@
+#logo-site {
+    width: 12%;
+    height: 6%;
+}
+
 .container {
     position: absolute;
     left: 0;
@@ -48,6 +53,10 @@ ion-slides{
 }
 
 ion-slide {
+
+    display: flexbox;
+    flex-direction: column;
+
     h1, ion-button {
         font-family: Nunito;
         font-style: normal;
