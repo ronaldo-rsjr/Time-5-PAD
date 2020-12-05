@@ -34,6 +34,7 @@
       <p>Sua playlist:</p>
       <ion-list class="playlist-videos" *ngFor="let item of playlistYT"> <!-- vai pegar cada elemento da playlist e criar um novo item -->
         <ion-item>
+          <img style="height: 100%; width: auto;" (click)="playVideo(item)" [src]="thumbs[playlistYT.indexOf(item)]"> <!-- thumbnail do video -->
           <ion-item (click)="playVideo(item)">{{item}}</ion-item> <!-- muda pro video selecionado -->
           <button [disabled]="verifyArray()" (click)="excludeVideo(item)"><ion-icon name="close-outline"></ion-icon></button> <!-- botao de excluir video -->
         </ion-item> 

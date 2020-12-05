@@ -16,6 +16,7 @@ export class StreamPage implements OnInit {
   // oq falta:
   // - trocar video qnd ele acabar
   // - stream pra varios usuarios
+  // - nome dos videos no lugar dos links
   // - pesquisa por video **se der tempo**
 
   constructor(public sanitizer: DomSanitizer, public http: HttpClient) { }
@@ -26,19 +27,22 @@ export class StreamPage implements OnInit {
   videoLink: any; // link do video | obs.: deve ter o '/embed/' no lugar do 'watch?v='
   videoID: any; // ID do video | ex.:https://www.youtube.com/watch?v=""FKE-4mlpk34"
   cont = 1; // a vez de cada video
-  same: boolean;
+  thumbs: any[] = ['https://img.youtube.com/vi/5qap5aO4i9A/default.jpg']; // array de thumbnails
+  thumbnail: any; // thumbnail do video
 
   ngOnInit(){ // start()
     this.currentVideo = this.playlistYT[0]; // vai passar o primeiro video no array pra iniciar quando o user abrir a pagina
     this.currentVideo = this.sanitizer.bypassSecurityTrustResourceUrl(this.currentVideo); // vai deixar o link inicial safe
   }
 
-  addVideo(){ // add video na playlist
+  addVideo(){ // add video na playlist e apaga videos iguais
     this.videoID = this.inputVideo.substr(32); // vai separar o ID do video do link inteiro
     this.inputVideo = ''; // reseta no input
     this.videoLink = 'https://www.youtube.com/embed/' + this.videoID + '?autoplay=1'; // passa o ID passado pelo usuario ao link
+    this.thumbnail = 'https://img.youtube.com/vi/' + this.videoID + '/default.jpg'; // passa o ID pra pegar a thumb
 
     this.playlistYT.push(this.videoLink); // adiciona o video no ultimo lugar do array
+    this.thumbs.push(this.thumbnail); // adiciona a thumbnail no array
     console.log('Adicionou o video: ' + this.videoLink);
 
     this.playlistYT = this.playlistYT.filter((este, i) => this.playlistYT.indexOf(este) === i); // vai apagar os video iguais
@@ -108,6 +112,7 @@ export class StreamPage implements OnInit {
     } // se nao for, ele nao atualiza o video, continua assistindo normalmente :)
 
     this.playlistYT.splice(x, 1); // vai remover o link do array
+    this.thumbs.splice(x, 1); // remove respectiva thumbnail
   }
 
   verifyArray(){ // verifica se so tem 1 item no array | Obs.: habilita/disabilita botao de excluir video
