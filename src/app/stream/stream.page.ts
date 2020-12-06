@@ -1,10 +1,7 @@
-import { NgForOf } from '@angular/common';
-import { HttpClient } from '@angular/common/http';
-import { analyzeAndValidateNgModules } from '@angular/compiler';
 import { Component, OnInit } from '@angular/core';
-
-// pra deixar o link safe
-import { DomSanitizer} from '@angular/platform-browser';
+import { HttpClient } from '@angular/common/http'; // pra chamar link
+import { DomSanitizer} from '@angular/platform-browser'; // pra deixar o link safe
+import { Observable } from 'rxjs'; // ajudar pegar dados
 
 @Component({
   selector: 'app-stream',
@@ -16,11 +13,12 @@ export class StreamPage implements OnInit {
   // oq falta:
   // - trocar video qnd ele acabar
   // - stream pra varios usuarios
-  // - nome dos videos no lugar dos links
   // - pesquisa por video **se der tempo**
+  // - suporte pro outro tipo de link pro yt (q geralmente tem no mobile)
 
-  constructor(public sanitizer: DomSanitizer, public http: HttpClient) { }
-
+  apiYT = 'AIzaSyDhZoTUSyiiIW40Qmp2CLqoguUpRrYYM50'; // meu API do YT
+  titulos: Observable<any>; // pega os dados do request
+  titulosArr: any[] = []; // array de titulos
   playlistYT: any[] = ['https://www.youtube.com/embed/5qap5aO4i9A?autoplay=1']; // a playlist | Obs.: primeiro item nao deve ficar vazio
   currentVideo: any = ''; // video atual e primeiro ao abrir a pagina | Obs.: nao deve ficar vazio
   inputVideo: any = ''; // aqui e o input do usuario
@@ -30,19 +28,34 @@ export class StreamPage implements OnInit {
   thumbs: any[] = ['https://img.youtube.com/vi/5qap5aO4i9A/default.jpg']; // array de thumbnails
   thumbnail: any; // thumbnail do video
 
+  constructor(public sanitizer: DomSanitizer, public http: HttpClient) { }
+
   ngOnInit(){ // start()
     this.currentVideo = this.playlistYT[0]; // vai passar o primeiro video no array pra iniciar quando o user abrir a pagina
     this.currentVideo = this.sanitizer.bypassSecurityTrustResourceUrl(this.currentVideo); // vai deixar o link inicial safe
+    this.getTitle('5qap5aO4i9A'); // titulo do video inicial
+  }
+
+  getTitle(videoid){ // pega o titulo do video
+    // faz o request do link
+    this.titulos = this.http.get('https://www.googleapis.com/youtube/v3/videos?id=' + videoid + '&key=' + this.apiYT + '&fields=items(snippet(title))&part=snippet');
+    this.titulos.subscribe(data => { // pega os dados
+      this.titulosArr.push(data.items[0].snippet.title); // pega o titulo
+    });
   }
 
   addVideo(){ // add video na playlist e apaga videos iguais
-    this.videoID = this.inputVideo.substr(32); // vai separar o ID do video do link inteiro
+    // checa o tipo de link e vai separar o ID do video do link inteiro
+    if (this.inputVideo.includes('youtu.be')) { this.videoID = this.inputVideo.substr(17); } // geralmente esse tipo vem do mobile
+    else if (this.inputVideo.includes('watch?v=')) { this.videoID = this.inputVideo.substr(32); }// esse tipo so da pra pegar pelo navegador
+
     this.inputVideo = ''; // reseta no input
     this.videoLink = 'https://www.youtube.com/embed/' + this.videoID + '?autoplay=1'; // passa o ID passado pelo usuario ao link
     this.thumbnail = 'https://img.youtube.com/vi/' + this.videoID + '/default.jpg'; // passa o ID pra pegar a thumb
 
     this.playlistYT.push(this.videoLink); // adiciona o video no ultimo lugar do array
     this.thumbs.push(this.thumbnail); // adiciona a thumbnail no array
+    this.getTitle(this.videoID); // adiciona o titulo do video no array
     console.log('Adicionou o video: ' + this.videoLink);
 
     this.playlistYT = this.playlistYT.filter((este, i) => this.playlistYT.indexOf(este) === i); // vai apagar os video iguais
@@ -74,7 +87,8 @@ export class StreamPage implements OnInit {
 
   verifyLink(){ // verifica se o link tem dominio do yt | Obs.: habilita/desabilita botao de add video
     let isenable;
-    if (this.inputVideo.indexOf('https://www.youtube.com/watch?v=') !== - 1) { isenable = true; } // botao habilita
+    if (this.inputVideo.indexOf('https://www.youtube.com/watch?v=') !== - 1 || this.inputVideo.indexOf('https://youtu.be/') !== - 1)
+    { isenable = true; } // botao habilita
     else { isenable = false; } // botao desabilita
     return !isenable; // retorna o valor
   }
@@ -113,6 +127,7 @@ export class StreamPage implements OnInit {
 
     this.playlistYT.splice(x, 1); // vai remover o link do array
     this.thumbs.splice(x, 1); // remove respectiva thumbnail
+    this.titulosArr.splice(x, 1); // remove respectivo titulo
   }
 
   verifyArray(){ // verifica se so tem 1 item no array | Obs.: habilita/disabilita botao de excluir video

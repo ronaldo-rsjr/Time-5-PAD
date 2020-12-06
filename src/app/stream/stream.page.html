@@ -15,7 +15,7 @@
         <ion-item> 
           <ion-label stacked>URL do video:</ion-label>
           <!-- aqui vai o link do video, input do usuario -->
-          <ion-input type="text" [(ngModel)]="inputVideo" text-right id="input" placeholder="Exemplo: https://www.youtube.com/watch?v=5qap5aO4i9A"></ion-input> 
+          <ion-input type="text" [(ngModel)]="inputVideo" text-right id="input" placeholder="Ex.: https://youtu.be/5qap5aO4 ou https://www.youtube.com/watch?v=5qap5a"></ion-input> 
           <!-- muda pro video anterior -->
           <ion-button type="submit" (click)="previousVideo()" [disabled]="verifyArrayFirst()"><ion-icon name="arrow-back-outline"></ion-icon></ion-button>
           <!-- muda pro proximo video -->
@@ -34,10 +34,11 @@
       <p>Sua playlist:</p>
       <ion-list class="playlist-videos" *ngFor="let item of playlistYT"> <!-- vai pegar cada elemento da playlist e criar um novo item -->
         <ion-item>
-          <img style="height: 100%; width: auto;" (click)="playVideo(item)" [src]="thumbs[playlistYT.indexOf(item)]"> <!-- thumbnail do video -->
-          <ion-item (click)="playVideo(item)">{{item}}</ion-item> <!-- muda pro video selecionado -->
+          <img style="height: 100%; width: auto;" (click)="playVideo(item)" [src]="thumbs[playlistYT.indexOf(item)]">
+          <p id="video-titulo" (click)="playVideo(item)" type="text">{{titulosArr[playlistYT.indexOf(item)]}}</p>
+          <!-- <ion-item (click)="playVideo(item)">{{item}}</ion-item>   muda pro video selecionado -->
           <button [disabled]="verifyArray()" (click)="excludeVideo(item)"><ion-icon name="close-outline"></ion-icon></button> <!-- botao de excluir video -->
-        </ion-item> 
+        </ion-item>  
       </ion-list>
     </div>
   </div>
