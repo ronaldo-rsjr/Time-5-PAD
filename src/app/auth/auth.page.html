@@ -1,6 +1,8 @@
 <link rel="preconnect" href="https://fonts.gstatic.com">
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
 
+<img src="../../assets/img/ImageLogo.png" id="logo-site">
+
 <ion-content class="swiper-no-swiping">  
   
   <ion-slides>
@@ -8,14 +10,13 @@
       <div class="slide-inner ion-padding">
         
         <!-- <h1>Entre no Streamtube</h1> -->
-        <img src="../../assets/img/ImageLogo.png" id="logo-site">
 
         <ion-item class ="ion-margin-top" lines ="none">
-          <ion-input type="email" placeholder="E-mail" [(ngModel)] = "userLogin.email"></ion-input>
+          <ion-input class="input-auth" type="email" placeholder="E-mail" [(ngModel)] = "userLogin.email"></ion-input>
         </ion-item>
 
         <ion-item class ="ion-margin-top" lines ="none">
-          <ion-input type="password" placeholder="Senha" [(ngModel)] = "userLogin.password"></ion-input>
+          <ion-input class="input-auth"  type="password" placeholder="Senha" [(ngModel)] = "userLogin.password"></ion-input>
         </ion-item>
 
         <ion-button class ="ion-margin-top" (click)="login()" color="danger" expand="block">
@@ -50,15 +51,15 @@
         <!-- <h1>Cadastre-se</h1> -->
         
         <ion-item class ="ion-margin-top" lines="none">
-          <ion-input type ="text" placeholder="Nome" [(ngModel)] = "userRegister.name"></ion-input>
+          <ion-input class="input-auth" type ="text" placeholder="Nome" [(ngModel)] = "userRegister.name"></ion-input>
         </ion-item>
 
         <ion-item class ="ion-margin-top" lines ="none">
-          <ion-input type="email" placeholder="E-mail" [(ngModel)] = "userRegister.email"></ion-input>
+          <ion-input class="input-auth" type="email" placeholder="E-mail" [(ngModel)] = "userRegister.email"></ion-input>
         </ion-item>
 
         <ion-item class ="ion-margin-top" lines ="none">
-          <ion-input type="password" placeholder="Senha" [(ngModel)] = "userRegister.password"></ion-input>
+          <ion-input class="input-auth"  type="password" placeholder="Senha" [(ngModel)] = "userRegister.password"></ion-input>
         </ion-item>
 
         <ion-button class ="ion-margin-top" (click) ="register()" color ="danger" expand ="block">

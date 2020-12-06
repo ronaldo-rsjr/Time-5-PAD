@@ -37,6 +37,7 @@ export class AuthPage implements OnInit {
 
   segmentChanged(value)
   {
+    this.clearForms();
     if (value === 'login')
     {
       this.slides.slidePrev();
@@ -47,6 +48,13 @@ export class AuthPage implements OnInit {
     {
       this.slides.slideNext();
       this.wavesPosition -= this.wavesDifference;
+    }
+  }
+
+  clearForms(){
+    const inputs = document.getElementsByClassName("input-auth");
+    
+    for (let index = 0; index < inputs.length; index++) {
     }
   }
 
@@ -65,6 +73,7 @@ export class AuthPage implements OnInit {
       this.loading.dismiss();
       AuthPage.isRegister = false;
     }
+    this.clearForms();
   }
 
   async register()
@@ -95,6 +104,7 @@ export class AuthPage implements OnInit {
       AuthPage.UserRegister = this.userRegister;
       console.log((await this.authService.getAuth().currentUser).displayName);
     }
+    this.clearForms();
   }
 
     async presentLoading() {
