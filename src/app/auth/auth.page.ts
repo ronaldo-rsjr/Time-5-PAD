@@ -55,6 +55,8 @@ export class AuthPage implements OnInit {
     const inputs = document.getElementsByClassName("input-auth");
     
     for (let index = 0; index < inputs.length; index++) {
+      // let value = inputs[index].getAttribute('value');
+      let value = inputs[index].setAttribute('value', '');
     }
   }
 
