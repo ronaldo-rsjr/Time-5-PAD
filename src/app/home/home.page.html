@@ -1,22 +1,28 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>
-      Blank
-    </ion-title>
-  </ion-toolbar>
-</ion-header>
+<link rel="preconnect" href="https://fonts.gstatic.com">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Blank</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-content>
+  <h3 id="salutation">Olá, {{nome}}!</h3>
 
-  <div id="container">
-    <strong>Olá, {{nome}}</strong>
+  <!-- <div id="container">
     <p>Start with Ionic <a target="_blank" rel="noopener noreferrer" href="https://ionicframework.com/docs/components">UI Components</a></p>
-    <ion-button (click) ="logout()">Logout</ion-button>
     <ion-button (click) ="displayname()">Name</ion-button>
+  </div> -->
+  <div id="action-container">
+    <div id="create-room">
+      <img src="../../assets/img/rounded.svg" class="rounded-button">
+      <img src="../../assets/img/plus.svg" id="plus-button">
+      <a>Criar Sala</a>
+    </div>
+
+    <div id="enter-room">
+      <img src="../../assets/img/rounded.svg" class="rounded-button">
+      <img src="../../assets/img/enter.svg" id="enter-button">
+      <a>Entrar na Sala</a>
+    </div>
   </div>
+
+  <a id="logout" (click) ="logout()">Logout</a>
+  <img src="../../assets/img/ImageLogo.png" id="logo-site">
+
 </ion-content>

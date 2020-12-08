@@ -25,3 +25,83 @@
 #container a {
   text-decoration: none;
 }
+
+ion-content {
+  align-items: center;
+}
+
+#salutation {
+  width: 15rem;
+  height: 4rem;
+
+  position: relative;
+  display: block;
+  padding: 15px 0;
+  margin: 0 auto;
+  
+  color: #EE5253;
+  
+  font-family: Nunito;
+  font-style: normal;
+  font-weight: 400;
+  text-align: center;
+  align-items: center;
+
+}
+
+#logout {
+  position: relative;
+  top: 70%;
+  
+  display: block;
+  
+  margin-left: auto;
+  margin-right: auto;     
+
+  color: #EE5253;
+
+  font-family: Nunito;
+  font-style: normal;
+  font-weight: 400;
+  text-align: center;
+}
+
+#logo-site {
+  position: relative;
+
+  width: 8rem;
+  height: 2rem;
+
+  display: block;
+
+  position: relative;
+  top: 70%;
+
+  margin-left: auto;
+  margin-right: auto;     
+}
+
+@media (max-width: 768px) {
+
+  #create-room { 
+    position: relative;    
+    align-content: center;
+  }
+
+  .rounded-button {
+    width: 65%;
+    height: 50%;
+
+    display: block;
+    
+    padding-bottom: 15px;
+    margin: 0 auto;
+  }
+
+  #plus-button {
+    z-index: 1;
+    display: block;
+    margin: 0 auto;
+  }
+
+}
