@@ -3,18 +3,23 @@
     <ion-title>
       StreamTube
     </ion-title>
-    <!-- botao de voltar pra pagina home -->
-    <ion-button href="../home" routerDirection="back">Voltar</ion-button>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
-  <div id="">
-    <div id="stream">
+  <div class="ion-page">
       <!-- aqui vai ser o input do usuario -->
       <ion-list>
         <ion-item> 
-          <ion-label stacked>URL do video:</ion-label>
+          <!-- botao do side nenu  -->
+          <div id="main-content"> 
+            <ion-header>
+              <ion-toolbar>
+                <ion-buttons onclick="openMenu()" slot="start"><ion-menu-button> </ion-menu-button></ion-buttons>
+              </ion-toolbar>
+            </ion-header>
+          </div> 
+          <ion-label stacked>URL:</ion-label>
           <!-- aqui vai o link do video, input do usuario -->
           <ion-input type="text" [(ngModel)]="inputVideo" text-right id="input" placeholder="Ex.: https://youtu.be/5qap5aO4 ou https://www.youtube.com/watch?v=5qap5a"></ion-input> 
           <!-- muda pro video anterior -->
@@ -22,37 +27,58 @@
           <!-- muda pro proximo video -->
           <ion-button type="submit" (click)="nextVideo()" [disabled]="verifyArrayLast()"><ion-icon name="arrow-forward-outline"></ion-icon></ion-button> 
           <!-- aqui e o botao que chama o metodo e add o video -->
-          <ion-button type="submit" (click)="addVideo()" [disabled]="verifyLink()">Adicionar na fila</ion-button> 
+          <ion-button type="submit" (click)="addVideo()" [disabled]="verifyLink()">Add</ion-button> 
         </ion-item> 
       </ion-list>
 
       <!-- aqui vai ser o video -->
-      <iframe id="video" [src]="currentVideo" allow="autoplay;" allowfullscreen></iframe>
-        
-      <!-- a lista dos videos na playlist -->
-      <p style="color: red">Fila de videos:</p>
-      <ion-list *ngFor="let item of playlistYT"> <!-- vai pegar cada elemento da playlist e criar um novo item -->
-        <ion-item>
-          <img style="height: 100%; width: auto;" (click)="playVideo(item)" [src]="thumbs[playlistYT.indexOf(item)]">
-          <p id="video-titulo" (click)="playVideo(item)" type="text">{{titulosArr[playlistYT.indexOf(item)]}}</p> <!-- muda pro video selecionado -->
-          <button [disabled]="verifyArray()" (click)="excludeVideo(item)"><ion-icon name="close-outline"></ion-icon></button> <!-- botao de excluir video -->
-        </ion-item> 
-      </ion-list>
+      <iframe id="video"  [src]="currentVideo" allow="autoplay;" allowfullscreen></iframe>
 
-      <!-- a lista do historico -->
-      <p style="color: red">Seu historico</p>
-      <!-- <ion-list>
-        <ion-item *ngFor="let item of historicoYT">
-          <img style="height: 100%; width: auto;" (click)="playVideo(item)" [src]="hisThumbs[historicoYT.indexOf(item)]">
-          <p id="video-titulo" (click)="playVideo(item)" type="text">{{titulosHis[historicoYT.indexOf(item)]}}</p> <!-- muda pro video selecionado 
-          <button (click)="excludeHist(item)"><ion-icon name="close-outline"></ion-icon></button> <!-- botao de excluir video 
-        </ion-item>
-      </ion-list> -->
-      <ion-list *ngFor="let hist of userHist">
-        <ion-item >
-          <p id="video-titulo" (click)="playVideo(hist)" type="text">{{hist|json}}</p> <!-- muda pro video selecionado -->
-        </ion-item> 
-      </ion-list>
-    </div>
+      <!-- side menu -->
+      <ion-menu side="start" content-id="main-content" class="my-custom">
+        <ion-content>
+          <ion-list>
+            <!-- voltar pra home -->
+            <ion-item href="../home" routerDirection="back"> <!-- voltar pra pagina home --> 
+              <ion-icon name="arrow-back" slot="start"></ion-icon>
+              <ion-label>Voltar pra home</ion-label>
+            </ion-item>
+            <!-- playlist -->
+            <ion-item >
+              <ion-icon name="caret-forward-circle-outline" slot="start"></ion-icon>
+              <ion-label>Fila de videos</ion-label>
+            </ion-item>
+            <ion-item id><!-- a lista dos videos na playlist -->
+              <div>
+                <ion-list *ngFor="let item of playlistYT"> <!-- vai pegar cada elemento da playlist e criar um novo item -->
+                  <ion-item> <!-- video -->
+                    <img id="thumbs" (click)="playVideo(item)" [src]="thumbs[playlistYT.indexOf(item)]"> <!-- thumb do video -->
+                    <p id="video-titulo" (click)="playVideo(item)" type="text"> <!-- muda pro video selecionado -->
+                      {{titulosArr[playlistYT.indexOf(item)]}} <!-- titulo do video -->
+                    </p> 
+                    <ion-button [disabled]="verifyArray()" (click)="excludeVideo(item)"> <!-- botao de excluir video -->
+                      <ion-icon name="close-outline"></ion-icon> <!-- icone -->
+                    </ion-button> 
+                  </ion-item> 
+                </ion-list>
+              </div>
+            </ion-item>
+            <!-- historico -->
+            <ion-item >
+              <ion-icon name="cloud-done-outline" slot="start"></ion-icon>
+              <ion-label>Seu historico</ion-label>
+            </ion-item>
+            <ion-item> <!-- a lista do historico -->
+              <div> 
+                <ion-list *ngFor="let video of userTitles"> <!-- array de links -->
+                  <ion-item >
+                    <p id="video-titulo" type="text">{{video}}</p> <!-- titulo do video / muda pro video selecionado -->
+                  </ion-item> 
+                </ion-list>
+              </div>
+            </ion-item>
+          </ion-list>
+        </ion-content>
+      </ion-menu>
   </div>
 </ion-content>

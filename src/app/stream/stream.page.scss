@@ -1,8 +1,20 @@
-  #video {
-    height: 400px;
-    width: 720px;
+
+  #video { //  tamanho da tela do video
+    height: 100%;
+    width: 100%;
   }
 
-  .playlist-videos {
-    text-align:left
+  .my-custom { // tamanho da largura do side menu
+    --width: 80%;
   }
+
+  .margin-text{
+    margin-left: 2%;
+  }
+
+  #thumbs{
+    height: auto; 
+    width: 40%;
+  }
+
+

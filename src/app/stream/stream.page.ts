@@ -2,9 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http'; // pra chamar link
 import { DomSanitizer} from '@angular/platform-browser'; // pra deixar o link safe
 import { Observable } from 'rxjs'; // ajudar pegar dados
-import { NavController, ToastController } from '@ionic/angular'; // pra mostrar a notificacao
+import { ToastController } from '@ionic/angular'; // pra mostrar a notificacao
 import { AngularFireDatabase } from '@angular/fire/database'; // pegar dados do firebase
 import { AuthService } from './../services/auth.service';
+import { MenuController } from '@ionic/angular'; // side menu
 
 @Component({
   selector: 'app-stream',
@@ -33,22 +34,39 @@ export class StreamPage implements OnInit {
   hisThumbs: any[] = []; // array de thumbnails
   titulosHis: any[] = []; // array de titulos
   // firebase
-  userHist: any[] = []; // array que vai ser 'loadado' do firebase
+  userHist: any[] = []; // array que vai ser carregado do firebase
+  userTitles: any[] = [];
   userName: any; // nome do usuario
-  PATH: any; // caminho dos dados no firebase
+  PATH: any; // caminho dos dados do user no firebase
 
-  constructor(public sanitizer: DomSanitizer, 
+  constructor(
+    public sanitizer: DomSanitizer, 
     public http: HttpClient, 
     public toastCtrl: ToastController,
     public afd: AngularFireDatabase, 
     public authService: AuthService,
-    public navCtrl: NavController) { }
+    public menu: MenuController) { }
 
   ngOnInit(){ 
     // 'setar' primeiro video
     this.currentVideo = this.playlistYT[0]; // vai passar o primeiro video no array pra iniciar quando o user abrir a pagina
     this.currentVideo = this.sanitizer.bypassSecurityTrustResourceUrl(this.currentVideo); // vai deixar o link inicial safe
     this.getTitle('5qap5aO4i9A', this.titulosArr); // titulo do video inicial
+    this.openFirst();
+  }
+
+  updateTitles(){ // atualiza titulos dos videos no historico
+    this.userTitles = [] = [];
+    this.userHist.forEach(element => {
+      let videoid;
+      if (element.includes('embed')) { videoid = element.substr(30); }
+      this.getTitle(videoid, this.userTitles);
+    });
+  }
+
+  openFirst() { // abre side menu
+    this.menu.enable(true, 'start');
+    this.menu.open('start');
   }
 
   ionViewWillEnter(){
@@ -72,6 +90,7 @@ export class StreamPage implements OnInit {
       data => {
         console.log(data);
         this.userHist = data; // passa os dados pro array
+        this.updateTitles();
       }
     )
   }
@@ -98,7 +117,7 @@ export class StreamPage implements OnInit {
 
   async showToast1() {
     await this.toastCtrl.create({
-      message: "'Por favor, clique no 'OK' para carregar seus dados :D", 
+      message: "Por favor, clique no 'OK' para carregar seus dados :D", 
       duration: 200000,
       position: 'middle',
       buttons: [{
@@ -115,6 +134,7 @@ export class StreamPage implements OnInit {
     // faz o request do link
     this.titulos = this.http.get('https://www.googleapis.com/youtube/v3/videos?id=' + videoid + '&key=' + this.apiYT + '&fields=items(snippet(title))&part=snippet');
     this.titulos.subscribe(data => { // pega os dados
+      //let vari = data.items[0].snippet.title.slice(0, 25) + '...';
       array.push(data.items[0].snippet.title); // passa o titulo pro array
     });
   }
