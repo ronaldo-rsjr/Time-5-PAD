@@ -5,6 +5,7 @@ import { User } from '../interfaces/user';
 import { on } from 'process';
 import { ToastController } from '@ionic/angular';
 
+
 @Component({
   selector: 'app-home',
   templateUrl: 'home.page.html',
@@ -14,7 +15,7 @@ export class HomePage{
   public nome: string;
   constructor(
     public authService: AuthService,
-    public toastCtrl: ToastController,
+    public toastCtrl: ToastController, 
   ) {}
 
   async ionViewWillEnter()

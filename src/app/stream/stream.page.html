@@ -1,14 +1,15 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-title>
-      Stream
+      StreamTube
     </ion-title>
+    <!-- botao de voltar pra pagina home -->
+    <ion-button href="../home" routerDirection="back">Voltar</ion-button>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
   <div id="">
-
     <div id="stream">
       <!-- aqui vai ser o input do usuario -->
       <ion-list>
@@ -21,24 +22,36 @@
           <!-- muda pro proximo video -->
           <ion-button type="submit" (click)="nextVideo()" [disabled]="verifyArrayLast()"><ion-icon name="arrow-forward-outline"></ion-icon></ion-button> 
           <!-- aqui e o botao que chama o metodo e add o video -->
-          <ion-button type="submit" (click)="addVideo()" [disabled]="verifyLink()">Adicionar na playlist</ion-button> 
+          <ion-button type="submit" (click)="addVideo()" [disabled]="verifyLink()">Adicionar na fila</ion-button> 
         </ion-item> 
-        <!-- mostra so os links adicionados na playlist -->
-        <!-- <ion-item><span>Adicionados na playlist: {{playlistYT | json}}</span></ion-item> -->
       </ion-list>
 
       <!-- aqui vai ser o video -->
       <iframe id="video" [src]="currentVideo" allow="autoplay;" allowfullscreen></iframe>
         
       <!-- a lista dos videos na playlist -->
-      <p>Sua playlist:</p>
-      <ion-list class="playlist-videos" *ngFor="let item of playlistYT"> <!-- vai pegar cada elemento da playlist e criar um novo item -->
+      <p style="color: red">Fila de videos:</p>
+      <ion-list *ngFor="let item of playlistYT"> <!-- vai pegar cada elemento da playlist e criar um novo item -->
         <ion-item>
           <img style="height: 100%; width: auto;" (click)="playVideo(item)" [src]="thumbs[playlistYT.indexOf(item)]">
-          <p id="video-titulo" (click)="playVideo(item)" type="text">{{titulosArr[playlistYT.indexOf(item)]}}</p>
-          <!-- <ion-item (click)="playVideo(item)">{{item}}</ion-item>   muda pro video selecionado -->
+          <p id="video-titulo" (click)="playVideo(item)" type="text">{{titulosArr[playlistYT.indexOf(item)]}}</p> <!-- muda pro video selecionado -->
           <button [disabled]="verifyArray()" (click)="excludeVideo(item)"><ion-icon name="close-outline"></ion-icon></button> <!-- botao de excluir video -->
-        </ion-item>  
+        </ion-item> 
+      </ion-list>
+
+      <!-- a lista do historico -->
+      <p style="color: red">Seu historico</p>
+      <!-- <ion-list>
+        <ion-item *ngFor="let item of historicoYT">
+          <img style="height: 100%; width: auto;" (click)="playVideo(item)" [src]="hisThumbs[historicoYT.indexOf(item)]">
+          <p id="video-titulo" (click)="playVideo(item)" type="text">{{titulosHis[historicoYT.indexOf(item)]}}</p> <!-- muda pro video selecionado 
+          <button (click)="excludeHist(item)"><ion-icon name="close-outline"></ion-icon></button> <!-- botao de excluir video 
+        </ion-item>
+      </ion-list> -->
+      <ion-list *ngFor="let hist of userHist">
+        <ion-item >
+          <p id="video-titulo" (click)="playVideo(hist)" type="text">{{hist|json}}</p> <!-- muda pro video selecionado -->
+        </ion-item> 
       </ion-list>
     </div>
   </div>

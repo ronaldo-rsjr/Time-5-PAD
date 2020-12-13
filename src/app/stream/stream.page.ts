@@ -2,6 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http'; // pra chamar link
 import { DomSanitizer} from '@angular/platform-browser'; // pra deixar o link safe
 import { Observable } from 'rxjs'; // ajudar pegar dados
+import { NavController, ToastController } from '@ionic/angular'; // pra mostrar a notificacao
+import { AngularFireDatabase } from '@angular/fire/database'; // pegar dados do firebase
+import { AuthService } from './../services/auth.service';
 
 @Component({
   selector: 'app-stream',
@@ -10,103 +13,152 @@ import { Observable } from 'rxjs'; // ajudar pegar dados
 })
 export class StreamPage implements OnInit {
 
-  // oq falta:
-  // - trocar video qnd ele acabar
-  // - stream pra varios usuarios
-  // - pesquisa por video **se der tempo**
-  // - suporte pro outro tipo de link pro yt (q geralmente tem no mobile)
-
-  apiYT = 'AIzaSyDhZoTUSyiiIW40Qmp2CLqoguUpRrYYM50'; // meu API do YT
+  // API do YT
+  private apiYT = 'AIzaSyDhZoTUSyiiIW40Qmp2CLqoguUpRrYYM50'; 
+  // titulos
   titulos: Observable<any>; // pega os dados do request
   titulosArr: any[] = []; // array de titulos
+  // videos 
   playlistYT: any[] = ['https://www.youtube.com/embed/5qap5aO4i9A?autoplay=1']; // a playlist | Obs.: primeiro item nao deve ficar vazio
   currentVideo: any = ''; // video atual e primeiro ao abrir a pagina | Obs.: nao deve ficar vazio
   inputVideo: any = ''; // aqui e o input do usuario
   videoLink: any; // link do video | obs.: deve ter o '/embed/' no lugar do 'watch?v='
   videoID: any; // ID do video | ex.:https://www.youtube.com/watch?v=""FKE-4mlpk34"
   cont = 1; // a vez de cada video
+  // thumbnails
   thumbs: any[] = ['https://img.youtube.com/vi/5qap5aO4i9A/default.jpg']; // array de thumbnails
   thumbnail: any; // thumbnail do video
+  // historico
+  historicoYT: any[] = []; // array do historico de videos
+  hisThumbs: any[] = []; // array de thumbnails
+  titulosHis: any[] = []; // array de titulos
+  // firebase
+  userHist: any[] = []; // array que vai ser 'loadado' do firebase
+  userName: any; // nome do usuario
+  PATH: any; // caminho dos dados no firebase
 
-  constructor(public sanitizer: DomSanitizer, public http: HttpClient) { }
+  constructor(public sanitizer: DomSanitizer, 
+    public http: HttpClient, 
+    public toastCtrl: ToastController,
+    public afd: AngularFireDatabase, 
+    public authService: AuthService,
+    public navCtrl: NavController) { }
 
-  ngOnInit(){ // start()
+  ngOnInit(){ 
+    // 'setar' primeiro video
     this.currentVideo = this.playlistYT[0]; // vai passar o primeiro video no array pra iniciar quando o user abrir a pagina
     this.currentVideo = this.sanitizer.bypassSecurityTrustResourceUrl(this.currentVideo); // vai deixar o link inicial safe
-    this.getTitle('5qap5aO4i9A'); // titulo do video inicial
+    this.getTitle('5qap5aO4i9A', this.titulosArr); // titulo do video inicial
   }
 
-  getTitle(videoid){ // pega o titulo do video
+  ionViewWillEnter(){
+    this.showToast1(); // mpstra depois
+    this.showToast(); // mostra primeiro
+  }
+
+  async getName(){ // pega nome do usuario
+    this.userName = await((await this.authService.getAuth().currentUser).displayName); // passa o nome pra variavel
+    console.log(this.userName);
+    this.PATH = 'Historico_Usuario/' + this.userName; // 'seta' o caminho no firebase
+    return this.userName; 
+  }
+
+  addData(){ // add dados ao firebase
+    this.afd.list(this.PATH).push(this.historicoYT[this.historicoYT.length - 1]); // envia o ultimo item do historico
+  }
+
+  getDataFromFirebase(){ // pega dados do firebase
+    this.afd.list(this.PATH).valueChanges().subscribe( // procura o caminho e pega os dados
+      data => {
+        console.log(data);
+        this.userHist = data; // passa os dados pro array
+      }
+    )
+  }
+
+  saveUserName(){ // pega nome do usuario e atualiza os dados
+    this.getName();
+    this.getDataFromFirebase();
+  }
+
+  async showToast() {
+    await this.toastCtrl.create({
+      message: "Bem vindo(a)!",
+      duration: 200000,
+      position: 'middle',
+      buttons: [{
+        text: 'OK',
+        handler: () => { 
+          this.saveUserName();
+          console.log("ok clicked");
+        }
+      }]
+    }).then(res => res.present());
+  }
+
+  async showToast1() {
+    await this.toastCtrl.create({
+      message: "'Por favor, clique no 'OK' para carregar seus dados :D", 
+      duration: 200000,
+      position: 'middle',
+      buttons: [{
+        text: 'OK',
+        handler: () => { 
+          this.saveUserName();
+          console.log("ok clicked");
+        }
+      }]
+    }).then(res => res.present());
+  }
+
+  getTitle(videoid, array){ // pega o titulo do video
     // faz o request do link
     this.titulos = this.http.get('https://www.googleapis.com/youtube/v3/videos?id=' + videoid + '&key=' + this.apiYT + '&fields=items(snippet(title))&part=snippet');
     this.titulos.subscribe(data => { // pega os dados
-      this.titulosArr.push(data.items[0].snippet.title); // pega o titulo
+      array.push(data.items[0].snippet.title); // passa o titulo pro array
     });
   }
 
   addVideo(){ // add video na playlist e apaga videos iguais
-    // checa o tipo de link e vai separar o ID do video do link inteiro
+    // extrai o ID do video pelo link
     if (this.inputVideo.includes('youtu.be')) { this.videoID = this.inputVideo.substr(17); } // geralmente esse tipo vem do mobile
     else if (this.inputVideo.includes('watch?v=')) { this.videoID = this.inputVideo.substr(32); }// esse tipo so da pra pegar pelo navegador
+    else if (this.inputVideo.includes('embed')) { this.videoID = this.inputVideo.substr(30); } // se tiver c/ 'embed'
 
+    // vai tirar os coiso q tiver dps do ID "&feature"
+    if (this.videoID.includes('&feature')) { this.videoID = this.videoID.substr(0, this.videoID.indexOf('&feature')); }
+
+    // 'setar' as seguintes variaveis
     this.inputVideo = ''; // reseta no input
     this.videoLink = 'https://www.youtube.com/embed/' + this.videoID + '?autoplay=1'; // passa o ID passado pelo usuario ao link
     this.thumbnail = 'https://img.youtube.com/vi/' + this.videoID + '/default.jpg'; // passa o ID pra pegar a thumb
 
+    // mandar cada link pra cada array
     this.playlistYT.push(this.videoLink); // adiciona o video no ultimo lugar do array
     this.thumbs.push(this.thumbnail); // adiciona a thumbnail no array
-    this.getTitle(this.videoID); // adiciona o titulo do video no array
+    this.getTitle(this.videoID, this.titulosArr); // adiciona o titulo do video no array
     console.log('Adicionou o video: ' + this.videoLink);
 
     this.playlistYT = this.playlistYT.filter((este, i) => this.playlistYT.indexOf(este) === i); // vai apagar os video iguais
   }
 
-  playVideo(link){ // metodo pra iniciar video que for selecionado na lista da playlist
-    this.currentVideo = link; // passa o link do video selecionado como video atual
-    this.currentVideo = this.sanitizer.bypassSecurityTrustResourceUrl(this.currentVideo); // vai deixar o link safe B)
-    console.log('Selecionou o video: ' + this.videoLink);
-  }
+  callHistorico(video){ // adiciona video ao historico
+    let id;
+    if (video.includes('embed')) { id = video.substr(30); }
+    if (id.includes('?autoplay=1')) { id = id.substr(0, id.indexOf('?autoplay=1')); }
 
-  nextVideo(){ // metodo pra pular pro proximo video
-    this.cont += 1; // add no contador
-    this.changeVideo();
-  }
+    let thisvid;
+    thisvid = 'https://www.youtube.com/embed/' + id; // passa o ID passado pelo usuario ao link
+    this.thumbnail = 'https://img.youtube.com/vi/' + id + '/default.jpg'; // passa o ID pra pegar a thumb
 
-  previousVideo(){ // metodo pra voltar pro video anterior
-    this.cont -= 1; // diminui no contador
-    this.changeVideo();
-  }
+    console.log('Adicionou ao historico: ' + thisvid);
+    this.historicoYT.push(thisvid); // adiciona video ao historico
+    this.hisThumbs.push(this.thumbnail); // adiciona a thumbnail no array
+    this.getTitle(id, this.titulosHis); // adiciona titulo
 
-  changeVideo(){ // metodo pra mudar de video
-    for (let i = this.cont - 1; i < this.cont; i ++){ // checa e evita fazer os mesmo comandos mais de 1x
-      this.currentVideo = this.playlistYT[i]; // toca o proximo video na playlist
-      this.currentVideo = this.sanitizer.bypassSecurityTrustResourceUrl(this.currentVideo); // vai deixar o link safe B)
-      console.log('Mudou pro video: ' + this.currentVideo);
-    }
+    this.addData(); // salva historico
   }
-
-  verifyLink(){ // verifica se o link tem dominio do yt | Obs.: habilita/desabilita botao de add video
-    let isenable;
-    if (this.inputVideo.indexOf('https://www.youtube.com/watch?v=') !== - 1 || this.inputVideo.indexOf('https://youtu.be/') !== - 1)
-    { isenable = true; } // botao habilita
-    else { isenable = false; } // botao desabilita
-    return !isenable; // retorna o valor
-  }
-
-  verifyArrayLast(){ // verifica se o video eh o ultimo do array | Obs.: habilita/desabilita botao de proximo video
-    let lastVideo;
-    if (this.cont + 1 <= this.playlistYT.length) { lastVideo = true; } // e o ultimo do array
-    else { lastVideo = false; } // nao e o ultimo
-    return !lastVideo; // retorna o valor
-  }
-
-  verifyArrayFirst(){ // verifica se o video eh o primeiro do array | Obs.: habilita/desabilita botao de previous video
-    let firstVideo;
-    if (this.cont - 1 > this.playlistYT.indexOf(this.currentVideo) + 1) { firstVideo = true; } // e o primeiro do array
-    else { firstVideo = false; } // nao e o primeiro
-    return !firstVideo; // retorna o valor
-  }
-
+  
   excludeVideo(link){ // exclui video selecionado da playlist
     // tslint:disable-next-line: prefer-const
     let x = this.playlistYT.indexOf(link); // vai pegar o index do video selecionado
@@ -128,6 +180,63 @@ export class StreamPage implements OnInit {
     this.playlistYT.splice(x, 1); // vai remover o link do array
     this.thumbs.splice(x, 1); // remove respectiva thumbnail
     this.titulosArr.splice(x, 1); // remove respectivo titulo
+  }
+
+  excludeHist(link){ // apaga video do historico
+    let x = this.historicoYT.indexOf(link); // vai pegar o index do video selecionado
+    link = this.sanitizer.bypassSecurityTrustResourceUrl(link); // vai deixar o link safe B)
+
+    this.historicoYT.splice(x, 1); // vai remover o link do array
+    this.hisThumbs.splice(x, 1); // remove respectiva thumbnail
+    this.titulosHis.splice(x, 1); // remove respectivo titulo
+  }
+
+  playVideo(link){ // metodo pra iniciar video que for selecionado na lista da playlist
+    this.currentVideo = link; // passa o link do video selecionado como video atual
+    this.callHistorico(link); // add no historico
+    this.currentVideo = this.sanitizer.bypassSecurityTrustResourceUrl(this.currentVideo); // vai deixar o link safe B)
+    console.log('Selecionou o video: ' + link);
+  }
+
+  nextVideo(){ // metodo pra pular pro proximo video
+    this.cont += 1; // add no contador
+    this.changeVideo();
+  }
+
+  previousVideo(){ // metodo pra voltar pro video anterior
+    this.cont -= 1; // diminui no contador
+    this.changeVideo();
+  }
+
+  changeVideo(){ // metodo pra mudar de video
+    for (let i = this.cont - 1; i < this.cont; i ++){ // checa e evita fazer os mesmo comandos mais de 1x
+      this.currentVideo = this.playlistYT[i]; // toca o proximo video na playlist
+      this.callHistorico(this.currentVideo); // add no historico
+      this.currentVideo = this.sanitizer.bypassSecurityTrustResourceUrl(this.currentVideo); // vai deixar o link safe B)
+      console.log('Mudou pro video: ' + this.videoLink);
+    }
+  }
+
+  verifyLink(){ // verifica se o link tem dominio do yt | Obs.: habilita/desabilita botao de add video
+    let isenable;
+    if (this.inputVideo.indexOf('https://www.youtube.com/watch?v=') !== - 1 || this.inputVideo.indexOf('https://youtu.be/') !== - 1
+    || this.inputVideo.indexOf('https://www.youtube.com/embed/') !== - 1) { isenable = true; } // botao habilita
+    else { isenable = false; } // botao desabilita
+    return !isenable; // retorna o valor
+  }
+
+  verifyArrayLast(){ // verifica se o video eh o ultimo do array | Obs.: habilita/desabilita botao de proximo video
+    let lastVideo;
+    if (this.cont + 1 <= this.playlistYT.length) { lastVideo = true; } // e o ultimo do array
+    else { lastVideo = false; } // nao e o ultimo
+    return !lastVideo; // retorna o valor
+  }
+
+  verifyArrayFirst(){ // verifica se o video eh o primeiro do array | Obs.: habilita/desabilita botao de previous video
+    let firstVideo;
+    if (this.cont - 1 > this.playlistYT.indexOf(this.currentVideo) + 1) { firstVideo = true; } // e o primeiro do array
+    else { firstVideo = false; } // nao e o primeiro
+    return !firstVideo; // retorna o valor
   }
 
   verifyArray(){ // verifica se so tem 1 item no array | Obs.: habilita/disabilita botao de excluir video
