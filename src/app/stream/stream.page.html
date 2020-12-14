@@ -36,6 +36,13 @@
 
       <!-- side menu -->
       <ion-menu side="start" content-id="main-content" class="my-custom">
+        <ion-header>
+          <ion-toolbar>
+            <ion-title>
+              Oi, {{userName}}! :D
+            </ion-title>
+          </ion-toolbar>
+        </ion-header>
         <ion-content>
           <ion-list>
             <!-- voltar pra home -->
@@ -56,9 +63,9 @@
                     <p id="video-titulo" (click)="playVideo(item)" type="text"> <!-- muda pro video selecionado -->
                       {{titulosArr[playlistYT.indexOf(item)]}} <!-- titulo do video -->
                     </p> 
-                    <ion-button [disabled]="verifyArray()" (click)="excludeVideo(item)"> <!-- botao de excluir video -->
+                     <button [disabled]="verifyArray()" (click)="excludeVideo(item)"> <!-- botao de excluir video -->
                       <ion-icon name="close-outline"></ion-icon> <!-- icone -->
-                    </ion-button> 
+                    </button>
                   </ion-item> 
                 </ion-list>
               </div>
@@ -67,12 +74,17 @@
             <ion-item >
               <ion-icon name="cloud-done-outline" slot="start"></ion-icon>
               <ion-label>Seu historico</ion-label>
+              <button (click)="apagarFB()">Apagar</button>
             </ion-item>
             <ion-item> <!-- a lista do historico -->
               <div> 
-                <ion-list *ngFor="let video of userTitles"> <!-- array de links -->
-                  <ion-item >
-                    <p id="video-titulo" type="text">{{video}}</p> <!-- titulo do video / muda pro video selecionado -->
+                <ion-list *ngFor="let video of userHist"> <!-- array de links -->
+                  <ion-item (click)="playVideo(video)"> <!-- muda pro video selecionado -->
+                    <img id="thumbs" [src]="userThumbs[userHist.indexOf(video)]"> <!-- thumb do video -->
+                    <p id="video-titulo" type="text">
+                      <!--{{userTitles[userHist.indexOf(video)]}} -   titulo do video | ta bugado -->
+                      {{video}} <!-- link do video -->
+                    </p> 
                   </ion-item> 
                 </ion-list>
               </div>

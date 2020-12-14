@@ -36,6 +36,7 @@ export class StreamPage implements OnInit {
   // firebase
   userHist: any[] = []; // array que vai ser carregado do firebase
   userTitles: any[] = [];
+  userThumbs: any[] = [];
   userName: any; // nome do usuario
   PATH: any; // caminho dos dados do user no firebase
 
@@ -45,31 +46,54 @@ export class StreamPage implements OnInit {
     public toastCtrl: ToastController,
     public afd: AngularFireDatabase, 
     public authService: AuthService,
-    public menu: MenuController) { }
+    public menu: MenuController) { 
+      
+    }
 
   ngOnInit(){ 
     // 'setar' primeiro video
     this.currentVideo = this.playlistYT[0]; // vai passar o primeiro video no array pra iniciar quando o user abrir a pagina
     this.currentVideo = this.sanitizer.bypassSecurityTrustResourceUrl(this.currentVideo); // vai deixar o link inicial safe
     this.getTitle('5qap5aO4i9A', this.titulosArr); // titulo do video inicial
-    this.openFirst();
+    this.openMenu(); 
   }
 
-  updateTitles(){ // atualiza titulos dos videos no historico
-    this.userTitles = [] = [];
+  apagarFB(){ // apagar historico do firebase
+    // apagar historico local
+    this.historicoYT.forEach(element => {
+      this.historicoYT.splice(element, 1); // remove
+    });
+    this.hisThumbs.forEach(element => {
+      this.hisThumbs.splice(element, 1); // remove 
+    });
+    this.titulosHis.forEach(element => {
+      this.titulosHis.splice(element, 1);
+    });
+    // apagar historico firebase
+    this.afd.list(this.PATH).remove(this.userName.key);
+  }
+
+  updateThumbs(){ // atualiza titulos dos videos no historico
+    this.userThumbs.length = 0;
+    // this.userTitles.length = 0;
+    let thumb;
     this.userHist.forEach(element => {
       let videoid;
-      if (element.includes('embed')) { videoid = element.substr(30); }
-      this.getTitle(videoid, this.userTitles);
+      if (element.includes('embed')) { 
+        videoid = element.substr(30);
+        thumb = 'https://img.youtube.com/vi/' + videoid + '/default.jpg'; 
+        this.userThumbs.push(thumb);
+        // this.getTitle(videoid, this.userTitles)
+      }
     });
   }
 
-  openFirst() { // abre side menu
+  openMenu() { // abre side menu
     this.menu.enable(true, 'start');
     this.menu.open('start');
   }
 
-  ionViewWillEnter(){
+  ionViewWillEnter(){ // ao abrir a pagina
     this.showToast1(); // mpstra depois
     this.showToast(); // mostra primeiro
   }
@@ -90,7 +114,7 @@ export class StreamPage implements OnInit {
       data => {
         console.log(data);
         this.userHist = data; // passa os dados pro array
-        this.updateTitles();
+        this.updateThumbs();
       }
     )
   }
@@ -100,6 +124,7 @@ export class StreamPage implements OnInit {
     this.getDataFromFirebase();
   }
 
+  // metodos pra carregar dados do firebase
   async showToast() {
     await this.toastCtrl.create({
       message: "Bem vindo(a)!",
@@ -114,7 +139,6 @@ export class StreamPage implements OnInit {
       }]
     }).then(res => res.present());
   }
-
   async showToast1() {
     await this.toastCtrl.create({
       message: "Por favor, clique no 'OK' para carregar seus dados :D", 
@@ -134,7 +158,7 @@ export class StreamPage implements OnInit {
     // faz o request do link
     this.titulos = this.http.get('https://www.googleapis.com/youtube/v3/videos?id=' + videoid + '&key=' + this.apiYT + '&fields=items(snippet(title))&part=snippet');
     this.titulos.subscribe(data => { // pega os dados
-      //let vari = data.items[0].snippet.title.slice(0, 25) + '...';
+      //let vari = data.items[0].snippet.title.slice(0, 25) + '...'; // limitar tamanho do titulo do video
       array.push(data.items[0].snippet.title); // passa o titulo pro array
     });
   }
@@ -180,12 +204,9 @@ export class StreamPage implements OnInit {
   }
   
   excludeVideo(link){ // exclui video selecionado da playlist
-    // tslint:disable-next-line: prefer-const
     let x = this.playlistYT.indexOf(link); // vai pegar o index do video selecionado
     link = this.sanitizer.bypassSecurityTrustResourceUrl(link); // vai deixar o link safe B)
-    // tslint:disable-next-line: prefer-const
     let linkstring = link.toString();
-    // tslint:disable-next-line: prefer-const
     let cvstring = this.currentVideo.toString();
 
     if (cvstring === linkstring) { // se o link a ser apagado for o video que esta assistindo, faz o seguinte
@@ -194,6 +215,7 @@ export class StreamPage implements OnInit {
       } else if (x === 1 && this.playVideo.length === 2 || x === this.playlistYT.length - 1) { // ultimo elemento no array ou for o segundo
         this.currentVideo = this.playlistYT[x - 1]; // volta um elemento no array              //e so tiver 2 elementos no array
       }
+      this.callHistorico(this.currentVideo); // como vai mudar de video, vai adicionar ao historico
       this.currentVideo = this.sanitizer.bypassSecurityTrustResourceUrl(this.currentVideo); // vai deixar o link safe B)
     } // se nao for, ele nao atualiza o video, continua assistindo normalmente :)
 
