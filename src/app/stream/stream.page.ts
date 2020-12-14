@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http'; // pra chamar link
 import { DomSanitizer} from '@angular/platform-browser'; // pra deixar o link safe
 import { Observable } from 'rxjs'; // ajudar pegar dados
-import { ToastController } from '@ionic/angular'; // pra mostrar a notificacao
+import { ToastController, LoadingController } from '@ionic/angular'; // pra mostrar a notificacao
 import { AngularFireDatabase } from '@angular/fire/database'; // pegar dados do firebase
 import { AuthService } from './../services/auth.service';
 import { MenuController } from '@ionic/angular'; // side menu
@@ -45,17 +45,16 @@ export class StreamPage implements OnInit {
     public http: HttpClient, 
     public toastCtrl: ToastController,
     public afd: AngularFireDatabase, 
-    public authService: AuthService,
-    public menu: MenuController) { 
-      
-    }
+    public authService: AuthService, //public loadingController: LoadingController,
+    public menu: MenuController) { }
 
   ngOnInit(){ 
     // 'setar' primeiro video
     this.currentVideo = this.playlistYT[0]; // vai passar o primeiro video no array pra iniciar quando o user abrir a pagina
     this.currentVideo = this.sanitizer.bypassSecurityTrustResourceUrl(this.currentVideo); // vai deixar o link inicial safe
     this.getTitle('5qap5aO4i9A', this.titulosArr); // titulo do video inicial
-    this.openMenu(); 
+
+    this.openMenu(); // abrir menu
   }
 
   apagarFB(){ // apagar historico do firebase
@@ -93,7 +92,7 @@ export class StreamPage implements OnInit {
     this.menu.open('start');
   }
 
-  ionViewWillEnter(){ // ao abrir a pagina
+  ionViewWillEnter(){ // async ao abrir a pagina
     this.showToast1(); // mpstra depois
     this.showToast(); // mostra primeiro
   }
@@ -286,5 +285,12 @@ export class StreamPage implements OnInit {
     if (this.playlistYT.length <= 1) { so1 = true; } // se o tamanha do array for 1 ou menos
     else { so1 = false; } // tem mais de 1 video
     return so1; // retorna o valor
+  }
+
+  verifyHist(){
+    let vazio;
+    if (this.userHist.length <= 0){ vazio = true; } 
+    else { vazio = false; }
+    return vazio;
   }
 }

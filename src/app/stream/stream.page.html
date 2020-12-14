@@ -1,24 +1,22 @@
 <ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>
-      StreamTube
-    </ion-title>
-  </ion-toolbar>
+  <ion-toolbar> <ion-title> StreamTube </ion-title> </ion-toolbar>
 </ion-header>
 
 <ion-content>
-  <div class="ion-page">
-      <!-- aqui vai ser o input do usuario -->
+  <div class="ion-page"> <!-- video fullscreen  -->
       <ion-list>
         <ion-item> 
           <!-- botao do side nenu  -->
           <div id="main-content"> 
             <ion-header>
               <ion-toolbar>
-                <ion-buttons onclick="openMenu()" slot="start"><ion-menu-button> </ion-menu-button></ion-buttons>
+                <ion-buttons onclick="openMenu()" slot="start"> <!-- abre side menu  -->
+                  <ion-menu-button> </ion-menu-button> <!-- icone padrao -->
+                </ion-buttons>
               </ion-toolbar>
             </ion-header>
           </div> 
+          <!-- aqui vai ser o input do usuario -->
           <ion-label stacked>URL:</ion-label>
           <!-- aqui vai o link do video, input do usuario -->
           <ion-input type="text" [(ngModel)]="inputVideo" text-right id="input" placeholder="Ex.: https://youtu.be/5qap5aO4 ou https://www.youtube.com/watch?v=5qap5a"></ion-input> 
@@ -36,23 +34,21 @@
 
       <!-- side menu -->
       <ion-menu side="start" content-id="main-content" class="my-custom">
-        <ion-header>
-          <ion-toolbar>
-            <ion-title>
-              Oi, {{userName}}! :D
-            </ion-title>
-          </ion-toolbar>
+        <!-- titulo do menu -->
+        <ion-header> 
+          <ion-toolbar> <ion-title> Oi, {{userName}}! :D </ion-title> </ion-toolbar> 
         </ion-header>
+        <!-- conteudo do menu -->
         <ion-content>
           <ion-list>
             <!-- voltar pra home -->
             <ion-item href="../home" routerDirection="back"> <!-- voltar pra pagina home --> 
-              <ion-icon name="arrow-back" slot="start"></ion-icon>
+              <ion-icon name="arrow-back" slot="start"></ion-icon> <!-- icone -->
               <ion-label>Voltar pra home</ion-label>
             </ion-item>
             <!-- playlist -->
             <ion-item >
-              <ion-icon name="caret-forward-circle-outline" slot="start"></ion-icon>
+              <ion-icon name="caret-forward-circle-outline" slot="start"></ion-icon> <!-- icone -->
               <ion-label>Fila de videos</ion-label>
             </ion-item>
             <ion-item id><!-- a lista dos videos na playlist -->
@@ -60,31 +56,31 @@
                 <ion-list *ngFor="let item of playlistYT"> <!-- vai pegar cada elemento da playlist e criar um novo item -->
                   <ion-item> <!-- video -->
                     <img id="thumbs" (click)="playVideo(item)" [src]="thumbs[playlistYT.indexOf(item)]"> <!-- thumb do video -->
-                    <p id="video-titulo" (click)="playVideo(item)" type="text"> <!-- muda pro video selecionado -->
+                    <span style="width: 100%;" id="video-titulo" (click)="playVideo(item)" type="text"> <!-- muda pro video selecionado -->
                       {{titulosArr[playlistYT.indexOf(item)]}} <!-- titulo do video -->
-                    </p> 
-                     <button [disabled]="verifyArray()" (click)="excludeVideo(item)"> <!-- botao de excluir video -->
-                      <ion-icon name="close-outline"></ion-icon> <!-- icone -->
-                    </button>
+                    </span> 
+                    <ion-button [disabled]="verifyArray()" (click)="excludeVideo(item)"> <!-- botao de excluir video -->
+                      <ion-icon name="close-outline" ></ion-icon> <!-- icone -->
+                    </ion-button>
                   </ion-item> 
                 </ion-list>
               </div>
             </ion-item>
             <!-- historico -->
-            <ion-item >
-              <ion-icon name="cloud-done-outline" slot="start"></ion-icon>
+            <ion-item>
+              <ion-icon name="cloud-done-outline" slot="start"></ion-icon> <!-- icone -->
               <ion-label>Seu historico</ion-label>
-              <button (click)="apagarFB()">Apagar</button>
+              <ion-button (click)="apagarFB()" [disabled]="verifyHist()">Apagar</ion-button> <!-- apagar historico -->
             </ion-item>
             <ion-item> <!-- a lista do historico -->
               <div> 
                 <ion-list *ngFor="let video of userHist"> <!-- array de links -->
                   <ion-item (click)="playVideo(video)"> <!-- muda pro video selecionado -->
-                    <img id="thumbs" [src]="userThumbs[userHist.indexOf(video)]"> <!-- thumb do video -->
-                    <p id="video-titulo" type="text">
+                    <img id="thumbs"[src]="userThumbs[userHist.indexOf(video)]"> <!-- thumb do video -->
+                    <span id="video-titulo" type="text">
                       <!--{{userTitles[userHist.indexOf(video)]}} -   titulo do video | ta bugado -->
                       {{video}} <!-- link do video -->
-                    </p> 
+                    </span>
                   </ion-item> 
                 </ion-list>
               </div>
