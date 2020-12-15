@@ -19,7 +19,7 @@ export class LoginGuard implements CanActivate {
         this.authService.getAuth().onAuthStateChanged(user => {
           if (user)
         {
-          this.router.navigate(['home']);
+          this.router.navigate(['stream']);
         }
 
           resolve (!user ? true : false);

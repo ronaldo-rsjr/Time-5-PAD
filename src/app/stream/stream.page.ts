@@ -57,6 +57,11 @@ export class StreamPage implements OnInit {
     this.openMenu(); // abrir menu
   }
 
+  logout()
+  {
+    this.authService.logout();
+  }
+  
   apagarFB(){ // apagar historico do firebase
     // apagar historico local
     this.historicoYT.forEach(element => {
@@ -125,18 +130,18 @@ export class StreamPage implements OnInit {
 
   // metodos pra carregar dados do firebase
   async showToast() {
-    await this.toastCtrl.create({
-      message: "Bem vindo(a)!",
-      duration: 200000,
-      position: 'middle',
-      buttons: [{
-        text: 'OK',
-        handler: () => { 
-          this.saveUserName();
-          console.log("ok clicked");
-        }
-      }]
-    }).then(res => res.present());
+    // await this.toastCtrl.create({
+    //   message: "Bem vindo(a)!",
+    //   duration: 200000,
+    //   position: 'middle',
+    //   buttons: [{
+    //     text: 'OK',
+    //     handler: () => { 
+    //       this.saveUserName();
+    //       console.log("ok clicked");
+    //     }
+    //   }]
+    // }).then(res => res.present());
   }
   async showToast1() {
     await this.toastCtrl.create({

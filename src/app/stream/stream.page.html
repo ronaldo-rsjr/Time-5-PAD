@@ -1,5 +1,5 @@
 <ion-header [translucent]="true">
-  <ion-toolbar> <ion-title> StreamTube </ion-title> </ion-toolbar>
+  <ion-toolbar>   <img src="../../assets/img/ImageLogo.png" id="logo-site">  </ion-toolbar>
 </ion-header>
 
 <ion-content>
@@ -41,10 +41,10 @@
         <!-- conteudo do menu -->
         <ion-content>
           <ion-list>
-            <!-- voltar pra home -->
-            <ion-item href="../home" routerDirection="back"> <!-- voltar pra pagina home --> 
+            <!-- Logout -->
+            <ion-item (click)="logout()"> <!-- voltar pra pagina home --> 
               <ion-icon name="arrow-back" slot="start"></ion-icon> <!-- icone -->
-              <ion-label>Voltar pra home</ion-label>
+              <ion-label>Logout</ion-label>
             </ion-item>
             <!-- playlist -->
             <ion-item >

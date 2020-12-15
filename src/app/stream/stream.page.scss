@@ -1,7 +1,26 @@
+  .item-native {
+    border: none;
+  }
+
+  #logo-site {
+    position: relative;
+
+    width: 8rem;
+    height: 2rem;
+
+    display: block;
+
+    position: relative;
+    top: 70%;
+
+    margin-left: auto;
+    margin-right: auto;     
+  }
 
   #video { //  tamanho da tela do video
     height: 100%;
     width: 100%;
+    border: none;
   }
 
   .my-custom { // tamanho da largura do side menu
@@ -12,5 +31,5 @@
     height: auto; 
     width: 40%;
   }
-
-
+  
+  
